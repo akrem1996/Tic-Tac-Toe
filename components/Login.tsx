@@ -9,9 +9,8 @@ const Login = () => {
   const [password, setPassword] = useState('');
   const [username, setUserName] = useState('');
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = (event: any) => {
     event.preventDefault();
-    // Hier kannst du deine Login-Logik implementieren
     console.log({
       username,
       email,
