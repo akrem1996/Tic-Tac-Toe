@@ -16,6 +16,7 @@ const Login = () => {
 
   const router = useRouter()
 
+<<<<<<< HEAD
   const handleSubmit = async (event: any) => {
     event.preventDefault();
     const email = event.target[0].value
@@ -53,6 +54,15 @@ const Login = () => {
     } catch (error) {
         setError("error")
     }
+=======
+  const handleSubmit = (event: any) => {
+    event.preventDefault();
+    console.log({
+      username,
+      email,
+      password,
+    });
+>>>>>>> d4acec3d11a7ee72b78c298fefe5d6f054a035bd
   };
 
   return (
