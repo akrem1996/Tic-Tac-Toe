@@ -1,7 +1,7 @@
 "use client"
 import React, { useState } from 'react';
+import Link from 'next/link';
 import '../app/globals.css';
-// import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 
 const Register = () => {
@@ -26,10 +26,12 @@ const Register = () => {
     const password = event.target[2].value
 
     if(!emailIsValidate(email)){
+      console.log("email is not validate")
       return
     }
 
     if (!password){
+      console.log("password is not validate")
       return
     }
 
@@ -98,7 +100,7 @@ const Register = () => {
         </div>
         <button type="submit" className="login-button">Register</button>
       </form>
-      {/* <Link className="block text-center text-blue-500" href="/login"> Login with an existing account</Link> */}
+      <Link className="block text-center text-blue-500" href="/"> Back to Login Page </Link>
     </div>
   );
 }

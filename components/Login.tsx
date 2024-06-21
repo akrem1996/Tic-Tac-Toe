@@ -1,22 +1,58 @@
 "use client"
 import React, { useState } from 'react';
 import Link from 'next/link';
+import Errors from './Errors';
+import { useRouter } from 'next/navigation';
+
 
 import '../app/globals.css';
 
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [username, setUserName] = useState('');
+  const [error, setError] = useState("")
+  const [falseEmail,setFalseEmail] = useState(true)
+  const [falsePassword,setFalsePassword] = useState(true)
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const router = useRouter()
+
+  const handleSubmit = async (event: any) => {
     event.preventDefault();
-    // Hier kannst du deine Login-Logik implementieren
-    console.log({
-      username,
-      email,
-      password,
-    });
+    const email = event.target[0].value
+    const password = event.target[1].value
+
+
+    try{
+      const res = await fetch("/api/login", {
+        method: "POST",
+        headers: {
+          "content-type" : "application/json"
+        },
+        body: JSON.stringify({
+          email,
+          password
+        }),
+        
+      })
+
+      if(res.status === 400){
+        setFalseEmail(false)
+        setError("email adress don't exists in the databse")
+      }
+
+      if(res.status === 401){
+        setFalsePassword(false)
+        setError("false password")
+      }
+
+
+      if(res.status === 200){
+        setError("")
+        router.push("/lobby")
+      }
+    } catch (error) {
+        setError("error")
+    }
   };
 
   return (
@@ -45,7 +81,9 @@ const Login = () => {
         </div>
         <button type="submit" className="login-button">Login</button>
       </form>
-      <Link className="block text-center text-blue-500" href="/register"> register if you don't have acount</Link>
+        {!falseEmail && <Errors message={error} />}
+        {!falsePassword && <Errors message={error}/>}
+      <Link className="block text-center text-blue-500" href="/register"> registrieren?</Link>
     </div>
   );
 }
