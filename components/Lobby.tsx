@@ -59,13 +59,7 @@ const Lobby = () => {
     }
     return null
   }
-
-  function handleCallback(childData:any) {
-    setMode(childData);
-  };
-
-
-    
+  
   useEffect(() => {
     const checkWinner = isWinner(fields);
 
@@ -75,11 +69,56 @@ const Lobby = () => {
       setWinner("equal Game");
     }
     else if (mode === 'computer' && currentPlayer === 'O') {
-      const emptyFields = fields.map((val, i) => val === null ? i : null).filter(val => val !== null);
-      const randomMove = emptyFields[Math.floor(Math.random() * emptyFields.length)];
-      setTimeout(() => setFieldsValue(randomMove as number), 500);
+      const bestMove = minimax(fields, 'O');
+      if (bestMove && bestMove.index !== undefined) {
+        setTimeout(() => setFieldsValue(bestMove.index), 500);
+      }
     }
   }, [fields, currentPlayer, mode]);
+
+ 
+  const minimax = (newFields: Player[], player: Player): { index: number, score: number } => {
+    const opponent = player === 'X' ? 'O' : 'X';
+    const winner = isWinner(newFields);
+  
+    if (winner === 'X') return { index: -1, score: -1 };
+    if (winner === 'O') return { index: -1, score: 1 };
+    if (newFields.every(field => field !== null)) return { index: -1, score: 0 }; // Unentschieden
+  
+    const moves: { index: number, score: number }[] = [];
+    for (let i = 0; i < newFields.length; i++) {
+      if (newFields[i] === null) {
+        const move = { index: i, score: 0 };
+        newFields[i] = player;
+        const result = minimax(newFields, opponent);
+        move.score = result.score;
+        newFields[i] = null;
+        moves.push(move);
+      }
+    }
+  
+    let bestMove = { index: -1, score: player === 'O' ? -Infinity : Infinity };
+    if (player === 'O') {
+      let bestScore = -Infinity;
+      for (let move of moves) {
+        if (move.score > bestScore) {
+          bestScore = move.score;
+          bestMove = move;
+        }
+      }
+    } else {
+      let bestScore = Infinity;
+      for (let move of moves) {
+        if (move.score < bestScore) {
+          bestScore = move.score;
+          bestMove = move;
+        }
+      }
+    }
+  
+    return bestMove;
+  };
+
 
   if (mode === null) {
     return (
